@@ -40,11 +40,14 @@ class Item(BaseModel):
     left: float
     width: float
     height: float
+    check: bool
 
 class DocsInfoDTO(BaseModel):
     title: str
     image: str
+    translate: str
     items: List[Item]
+    emptyItems: List[Item]
 
 class DocsFillRequest(BaseModel):
     memberInfo: MemberInfo
