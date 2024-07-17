@@ -1,19 +1,20 @@
 from fastapi import FastAPI, Depends, Path, HTTPException
-from pydantic import BaseModel
-from database import engineconn
-from models import Test
+from domain import router
+from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-engine = engineconn()
-session = engine.sessionmaker()
+origins = [
+    "http://127.0.0.1:8080",
+    "http://127.0.0.1:8081",
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-class Item(BaseModel):
-    name : str
-    number : int
-
-@app.get("/")
-async def first_get():
-    example = session.query(Test).all()
-    return example
+app.include_router(router.router)
