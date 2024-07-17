@@ -1,8 +1,5 @@
 from typing import List
 from pydantic import BaseModel, Field
-from fastapi import FastAPI
-
-app = FastAPI()
 
 class PassportInfo(BaseModel):
     passportNumber: str
@@ -53,11 +50,20 @@ class DocsFillRequest(BaseModel):
     memberInfo: MemberInfo
     docsInfoDTO: DocsInfoDTO
 
-__all__ = [
-    "PassportInfo",
-    "IdentityCardInfo",
-    "MemberInfo",
-    "Item",
-    "DocsInfoDTO",
-    "DocsFillRequest"
-]
+class Coordi(BaseModel):
+    top: float
+    left: float
+
+    def __hash__(self):
+        return hash((self.top, self.left))
+
+    def __eq__(self, other):
+        if isinstance(other, Coordi):
+            return self.top == other.top and self.left == other.left
+        return False
+
+class ItemInfo(BaseModel):
+    is_check: bool
+    is_ex: bool
+    text: str
+

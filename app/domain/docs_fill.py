@@ -1,7 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
+from domain.models import ItemInfo,Coordi
 
-def draw_text_on_image(image_stream, data:dict):
+def draw_text_on_image(image_stream, data:dict[Coordi, ItemInfo]):
     # 이미지 열기
     image = Image.open(BytesIO(image_stream))
     
@@ -16,11 +17,22 @@ def draw_text_on_image(image_stream, data:dict):
     except IOError:
         font = ImageFont.load_default()
 
-    # 딕셔너리를 돌면서 이미지 위에 텍스트 그리기
-    for key, value in data.items():
-        if value:  # 값이 비어있지 않은 경우에만 그리기
-            top, left = map(float, key.strip("()").split(","))
-            draw.text((left, top), value, fill="Blue", font=font)
+    # # 딕셔너리를 돌면서 이미지 위에 텍스트 그리기
+    # for key, value in data.items():
+    #     if value:  # 값이 비어있지 않은 경우에만 그리기
+    #         top, left = map(float, key.strip("()").split(","))
+    #         draw.text((left, top), value, fill="Blue", font=font)
+
+    # 데이터 딕셔너리를 돌면서 이미지 위에 텍스트 그리기
+    for coordi, item_info in data.items():
+        text = item_info.text
+        if item_info.is_check:
+            text="V"
+        if text:  # 텍스트가 비어있지 않은 경우에만 그리기
+            top = coordi.top+5
+            left = coordi.left+10
+            fill_color = (80, 80, 80) if item_info.is_ex else "Blue"
+            draw.text((left, top), text, fill=fill_color, font=font)
 
     # 이미지를 바이트 배열로 저장합니다
     img_byte_arr = BytesIO()
