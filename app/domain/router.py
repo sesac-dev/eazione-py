@@ -23,7 +23,7 @@ def checker(data: str = Form(...)):
 
 @router.post("/docsfill")
 async def docs_fill(image: UploadFile = File(...), data: DocsFillRequest = Depends(checker)) :
-    data_dict = match()
+    data_dict = await match(data)
     image_stream = await image.read()
     img_byte_arr = draw_text_on_image(image_stream, data_dict)
     return StreamingResponse(img_byte_arr, media_type="image/jpeg")
