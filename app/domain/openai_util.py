@@ -76,12 +76,14 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
         item_info_data = json.loads(response_message)
     except json.JSONDecodeError as e:
         print(f"JSONDecodeError: {e}")
+        print("------------------------")
         print(response_message)
-        raise ValueError("Invalid JSON response from OpenAI")
+        print("------------------------")
+        item_info_data = json.loads("{\"is_ex\":true,\"is_check\":false,\"text\":\"fail\"}")
 
     # item_info_data가 딕셔너리인지 확인
-    if not isinstance(item_info_data, dict):
-        raise ValueError("The response is not a valid JSON object")
+    # if not isinstance(item_info_data, dict):
+    #     raise ValueError("The response is not a valid JSON object")
 
     # ItemInfo 객체로 변환
     item_info = ItemInfo(**item_info_data)
@@ -91,9 +93,11 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
 async def generate_translate_item(text: str, translate: str) -> str:
     # OpenAI API를 호출하기 위한 프롬프트 작성
     prompt = f"""
-    Translate the following text to {translate} and provide only the translated text without any explanations:
+    Translate the following text to {translate} :
     
     Text: "{text}"
+
+    provide only the translated text without any explanations.
     """
 
     # OpenAI API 호출

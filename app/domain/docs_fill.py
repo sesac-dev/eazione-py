@@ -16,19 +16,19 @@ def draw_text_on_image(image_stream, filled_empty_items:dict[Coordi, ItemInfo], 
 
     # 폰트 설정 (여기서는 기본 폰트를 사용합니다. 다른 폰트를 사용하려면 경로를 지정하세요.)
     try:
-        font = ImageFont.truetype("arial.ttf", 15)  # 시스템에 Arial 폰트가 설치되어 있어야 합니다.
+        font = ImageFont.truetype("arial.ttf", 13)  # 시스템에 Arial 폰트가 설치되어 있어야 합니다.
     except IOError:
         font = ImageFont.load_default()
 
     # #번역된 내용 붙이기
-    # for item in translate_items:
-    #     top = item.top
-    #     left = item.left
-    #     right = left + item.width
-    #     bottom = top + item.height
-    #     region = [(left, top), (right, bottom)]
-    #     draw.rectangle(region, fill=background_color)
-    #     draw.text((left, top), item.columnName, fill="Black", font=font)
+    for item in translate_items:
+        top = item.top
+        left = item.left
+        right = left + item.width
+        bottom = top + item.height
+        region = [(left, top), (right, bottom)]
+        draw.rectangle(region, fill=background_color)
+        draw.text((left, top), item.columnName, fill="Black", font=font)
 
     # 데이터 딕셔너리를 돌면서 이미지 위에 텍스트 그리기
     for coordi, item_info in filled_empty_items.items():
@@ -38,7 +38,7 @@ def draw_text_on_image(image_stream, filled_empty_items:dict[Coordi, ItemInfo], 
         if text:  # 텍스트가 비어있지 않은 경우에만 그리기
             top = coordi.top+5
             left = coordi.left+10
-            fill_color = (80, 80, 80) if item_info.is_ex else "Blue"
+            fill_color = "Red" if item_info.is_ex else "Blue"
             draw.text((left, top), text, fill=fill_color, font=font)
 
     # 이미지를 바이트 배열로 저장합니다

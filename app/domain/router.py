@@ -26,7 +26,7 @@ async def docs_fill(image: UploadFile = File(...), data: DocsFillRequest = Depen
     filled_empty_items = await match(data)
     print(filled_empty_items)
     print("-------------------------------------")
-    translate_items = [] #await translate(data)
+    translate_items = await translate(data)
     print(translate_items)
     image_stream = await image.read()
     img_byte_arr = draw_text_on_image(image_stream, filled_empty_items,translate_items)
