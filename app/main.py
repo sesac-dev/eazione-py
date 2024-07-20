@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, Path, HTTPException
 from domain import router
 from starlette.middleware.cors import CORSMiddleware
 
-app = FastAPI(docs_url='/ai/docs')
+app = FastAPI(docs_url='/ai/docs', openapi_url='/ai/openapi.json')
 
 origins = [
     "http://127.0.0.1:8080",
