@@ -42,6 +42,11 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
     - ProfileImage: {member_info.profileImage}
     - Income: {member_info.income}
     - Housing Type: {member_info.housingType}
+    - phoneNumber: {member_info.phoneNumber}
+    - currentWorkplace: {member_info.currentWorkplace}
+    - currentWorkplaceRegistrationNumber: {member_info.currentWorkplaceRegistrationNumber}
+    - workplacePhoneNumber: {member_info.workplacePhoneNumber}
+    - signature: {member_info.signature}
 
 
     Based on this information, please match the column name "{item.columnName}" to the most relevant piece of information and enter the data into 'text'. You must follow these few rules:

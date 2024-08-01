@@ -34,6 +34,12 @@ class MemberInfo(BaseModel):
     identityCardInfo: IdentityCardInfo
     income: int
     housingType: str
+    phoneNumber: str
+    currentWorkplace: str
+    currentWorkplaceRegistrationNumber: str
+    workplacePhoneNumber: str
+    signature: str
+
 
 class Item(BaseModel):
     columnName: str
