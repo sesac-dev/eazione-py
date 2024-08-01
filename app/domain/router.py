@@ -14,7 +14,7 @@ router = APIRouter(
 
 def checker(data: str = Form(...)):
     try:
-        return DocsFillRequest.model_validate_json(data)
+        return DocsFillRequest.parse_raw(data)  # JSON 데이터를 DocsFillRequest 모델로 파싱
     except ValidationError as e:
         raise HTTPException(
             detail=jsonable_encoder(e.errors()),
