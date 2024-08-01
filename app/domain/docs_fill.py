@@ -17,7 +17,7 @@ def draw_text_on_image(image_stream, filled_empty_items:dict[Coordi, ItemInfo], 
 
     # 폰트 설정 (여기서는 기본 폰트를 사용합니다. 다른 폰트를 사용하려면 경로를 지정하세요.)
     try:
-        font = ImageFont.truetype("arial.ttf", 13)  # 시스템에 Arial 폰트가 설치되어 있어야 합니다.
+        font = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf', 13)  # 시스템에 Arial 폰트가 설치되어 있어야 합니다.
     except IOError:
         font = ImageFont.load_default()
 
