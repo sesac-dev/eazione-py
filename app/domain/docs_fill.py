@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 from domain.models import *
 from collections import Counter
+import requests
 
 def draw_text_on_image(image_stream, filled_empty_items:dict[Coordi, ItemInfo], translate_items:list[Item]):
     # 이미지 열기
@@ -33,6 +34,19 @@ def draw_text_on_image(image_stream, filled_empty_items:dict[Coordi, ItemInfo], 
     # 데이터 딕셔너리를 돌면서 이미지 위에 텍스트 그리기
     for coordi, item_info in filled_empty_items.items():
         text = item_info.text
+        if item_info.is_photo:
+            photo_response = requests.get(text)
+            overlay_image = Image.open(BytesIO(photo_response.content)).convert('RGBA')
+            overlay_image = overlay_image.resize((int(coordi.width), int(coordi.height)))
+
+            # 투명도를 지원하기 위해 알파 채널을 분리하고 새로운 배경에 합성
+            r, g, b, a = overlay_image.split()
+            overlay_image_rgb = Image.merge('RGB', (r, g, b))
+            mask = Image.merge('L', (a,))
+
+            # 오버레이 이미지를 배경 이미지 위에 붙입니다
+            image.paste(overlay_image_rgb, (int(coordi.left), int(coordi.top)), mask)
+            continue
         if item_info.is_check:
             if item_info.is_ex: continue
             text="V"

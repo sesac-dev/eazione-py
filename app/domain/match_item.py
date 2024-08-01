@@ -7,7 +7,7 @@ async def match(request: DocsFillRequest) -> dict[Coordi,ItemInfo] :
     member_info = request.memberInfo
     emptyItems = request.docsInfoDTO.emptyItems
     for item in emptyItems:
-        coordi = Coordi(top=item.top, left=item.left)
+        coordi = Coordi(top=item.top, left=item.left, width=item.width, height=item.height)
         
         # GPT API를 호출하여 ItemInfo를 생성
         item_info = await generate_item_info(item, member_info)

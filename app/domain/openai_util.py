@@ -53,6 +53,7 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
 
     6. Provide the result in the following JSON format:
     {{
+        "is_photo": {item.photo},
         "is_check": {item.check},
         "is_ex": {"true" if item.columnName not in member_info else "false"},
         "text": "matched or fictional data"
@@ -88,7 +89,7 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
         print("------------------------")
         print(response_message)
         print("------------------------")
-        item_info_data = json.loads("{\"is_ex\":true,\"is_check\":false,\"text\":\"fail\"}")
+        item_info_data = json.loads("{\"is_photo\":false,\"is_ex\":true,\"is_check\":false,\"text\":\"fail\"}")
 
     # item_info_data가 딕셔너리인지 확인
     # if not isinstance(item_info_data, dict):

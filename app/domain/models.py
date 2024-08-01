@@ -58,16 +58,19 @@ class DocsFillRequest(BaseModel):
 class Coordi(BaseModel):
     top: float
     left: float
+    width: float
+    height: float
 
     def __hash__(self):
-        return hash((self.top, self.left))
+        return hash((self.top, self.left, self.width, self.height))
 
     def __eq__(self, other):
         if isinstance(other, Coordi):
-            return self.top == other.top and self.left == other.left
+            return self.top == other.top and self.left == other.left and self.width == other.width and self.height == other.height
         return False
 
 class ItemInfo(BaseModel):
+    is_photo: bool
     is_check: bool
     is_ex: bool
     text: str
