@@ -50,8 +50,9 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
     3. 'yy' means year, 'mm' means month, 'dd' means day. ex) if the column name is 'birthday_dd' and matched data is '19970611', enter '11'.
     4. If an exact match cannot be found, please generate a fictional piece of data.
     5. If {item.check} is true, data is empty string.
+    6. When the column represents gender, if it is different from the gender retrieved from user information, set is_ex to true.
 
-    6. Provide the result in the following JSON format:
+    7. Provide the result in the following JSON format:
     {{
         "is_photo": {item.photo},
         "is_check": {item.check},
@@ -59,8 +60,8 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
         "text": "matched or fictional data"
     }}
 
-    7. Ensure that the "is_ex" field is set to true only if the data in the "text" field is fictional. If the data is from member_info, set "is_ex" to false.
-    8. Only provide the data in the "text" field without any additional labels or prefixes. its type is str.
+    8. Ensure that the "is_ex" field is set to true only if the data in the "text" field is fictional. If the data is from member_info, set "is_ex" to false.
+    9. Only provide the data in the "text" field without any additional labels or prefixes. its type is str.
     """
     # OpenAI API 호출
     response = client.chat.completions.create(
