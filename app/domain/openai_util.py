@@ -92,18 +92,15 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
         item_info_data = json.loads(response_message)
     except json.JSONDecodeError as e:
         print(f"JSONDecodeError: {e}")
-        print("------------------------")
-        print(response_message)
-        print("------------------------")
+        # print("------------------------")
+        # print(response_message)
+        # print("------------------------")
         item_info_data = json.loads("{\"is_photo\":false,\"is_ex\":true,\"is_check\":false,\"text\":\"fail\"}")
 
     # item_info_data가 딕셔너리인지 확인
     # if not isinstance(item_info_data, dict):
     #     raise ValueError("The response is not a valid JSON object")
 
-    print("-----------------------------")
-    print(item_info_data)
-    print("-----------------------------")
     # ItemInfo 객체로 변환
     item_info = ItemInfo(**item_info_data)
 
