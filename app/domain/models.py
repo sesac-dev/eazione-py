@@ -3,8 +3,8 @@ from pydantic import BaseModel, Field
 
 class PassportInfo(BaseModel):
     passportNumber: str
-    sureName: str
-    givenNames: str
+    surName: str
+    givenName: str
     dateOfBirth: str
     sex: str
     nationality: str
@@ -16,9 +16,9 @@ class PassportInfo(BaseModel):
     countryOfIssue: str
 
 class IdentityCardInfo(BaseModel):
-    number: str
+    foreignNumber: str
     name: str
-    county: str
+    country: str
     status: str
     issueDate: str
     startDateOfStay: str
@@ -29,6 +29,7 @@ class IdentityCardInfo(BaseModel):
 class MemberInfo(BaseModel):
     email: str
     name: str
+    profileImage: str
     passportInfo: PassportInfo
     identityCardInfo: IdentityCardInfo
     income: int
@@ -41,6 +42,7 @@ class Item(BaseModel):
     width: float
     height: float
     check: bool
+    photo: bool
 
 class DocsInfoDTO(BaseModel):
     title: str

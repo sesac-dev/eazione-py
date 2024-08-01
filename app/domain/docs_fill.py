@@ -21,19 +21,20 @@ def draw_text_on_image(image_stream, filled_empty_items:dict[Coordi, ItemInfo], 
         font = ImageFont.load_default()
 
     # #번역된 내용 붙이기
-    for item in translate_items:
-        top = item.top
-        left = item.left
-        right = left + item.width
-        bottom = top + item.height
-        region = [(left, top), (right, bottom)]
-        draw.rectangle(region, fill=background_color)
-        draw.text((left, top), item.columnName, fill="Black", font=font)
+    # for item in translate_items:
+    #     top = item.top
+    #     left = item.left
+    #     right = left + item.width
+    #     bottom = top + item.height
+    #     region = [(left, top), (right, bottom)]
+    #     draw.rectangle(region, fill=background_color)
+    #     draw.text((left, top), item.columnName, fill="Black", font=font)
 
     # 데이터 딕셔너리를 돌면서 이미지 위에 텍스트 그리기
     for coordi, item_info in filled_empty_items.items():
         text = item_info.text
         if item_info.is_check:
+            if item_info.is_ex: continue
             text="V"
         if text:  # 텍스트가 비어있지 않은 경우에만 그리기
             top = coordi.top+5

@@ -2,17 +2,19 @@ from openai import OpenAI
 from domain.models import *
 import json
 import config
+from datetime import datetime
 
 client = OpenAI(api_key=config.OPENAI_KEY)
 
 async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
+    today = datetime.today().strftime("%Y-%m-%d")
     # OpenAI API를 호출하기 위한 프롬프트 작성
     prompt = f"""
     Given the following member information:
     Passport Info:
     - Passport Number: {member_info.passportInfo.passportNumber}
-    - Sure Name: {member_info.passportInfo.sureName}
-    - Given Names: {member_info.passportInfo.givenNames}
+    - Sur Name: {member_info.passportInfo.surName}
+    - Given Name: {member_info.passportInfo.givenName}
     - Date of Birth: {member_info.passportInfo.dateOfBirth}
     - Sex: {member_info.passportInfo.sex}
     - Nationality: {member_info.passportInfo.nationality}
@@ -24,9 +26,9 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
     - Country of Issue: {member_info.passportInfo.countryOfIssue}
 
     Identity Card Info:
-    - Number: {member_info.identityCardInfo.number}
+    - ForeignNumber: {member_info.identityCardInfo.foreignNumber}
     - Name: {member_info.identityCardInfo.name}
-    - County: {member_info.identityCardInfo.county}
+    - Country: {member_info.identityCardInfo.country}
     - Status: {member_info.identityCardInfo.status}
     - Issue Date: {member_info.identityCardInfo.issueDate}
     - Start Date of Stay: {member_info.identityCardInfo.startDateOfStay}
@@ -37,25 +39,31 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
     General Info:
     - Email: {member_info.email}
     - Name: {member_info.name}
+    - ProfileImage: {member_info.profileImage}
     - Income: {member_info.income}
     - Housing Type: {member_info.housingType}
 
 
-    Based on this information, please match the column name "{item.columnName}" to the most relevant piece of information. If an exact match cannot be found, please generate a fictional piece of data.
+    Based on this information, please match the column name "{item.columnName}" to the most relevant piece of information and enter the data into 'text'. You must follow these few rules:
+    1. If '_idx:num' is appended to the column name, only the numth index of the matched data is entered. ex) if the column name is '외국인 등록번호_idx:0' and matched data is 'Z123456781234', enter 'z'.
+    2. If the column name is '신청일', enter {today}.
+    3. 'yy' means year, 'mm' means month, 'dd' means day. ex) if the column name is 'birthday_dd' and matched data is '19970611', enter '11'.
+    4. If an exact match cannot be found, please generate a fictional piece of data.
+    5. If {item.check} is true, data is empty string.
 
-    Provide the result in the following JSON format:
+    6. Provide the result in the following JSON format:
     {{
         "is_check": {item.check},
         "is_ex": {"true" if item.columnName not in member_info else "false"},
         "text": "matched or fictional data"
     }}
-    
-    Ensure that the "is_ex" field is set to true only if the data in the "text" field is fictional. If the data is from member_info, set "is_ex" to false.
-    Only provide the data in the "text" field without any additional labels or prefixes.
+
+    7. Ensure that the "is_ex" field is set to true only if the data in the "text" field is fictional. If the data is from member_info, set "is_ex" to false.
+    8. Only provide the data in the "text" field without any additional labels or prefixes. its type is str.
     """
     # OpenAI API 호출
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
@@ -73,6 +81,7 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
 
     # JSON 파싱이 제대로 되는지 확인
     try:
+        response_message = response_message.replace('False', 'false').replace('True', 'true')
         item_info_data = json.loads(response_message)
     except json.JSONDecodeError as e:
         print(f"JSONDecodeError: {e}")
@@ -85,6 +94,9 @@ async def generate_item_info(item: Item, member_info: MemberInfo) -> ItemInfo:
     # if not isinstance(item_info_data, dict):
     #     raise ValueError("The response is not a valid JSON object")
 
+    print("-----------------------------")
+    print(item_info_data)
+    print("-----------------------------")
     # ItemInfo 객체로 변환
     item_info = ItemInfo(**item_info_data)
 
@@ -102,7 +114,7 @@ async def generate_translate_item(text: str, translate: str) -> str:
 
     # OpenAI API 호출
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
@@ -113,33 +125,3 @@ async def generate_translate_item(text: str, translate: str) -> str:
     translated_text = response.choices[0].message.content.strip()
     
     return translated_text
-
-
-
-#     # 데이터를 GPT API에 전달할 프롬프트 형식으로 준비
-#     prompt = f"""
-#     You are given a column name and member information. Your task is to find the semantically matching information from the member data for the given column name. If no matching information is found, generate a dummy text based on the column name and set 'is_ex' to true. Otherwise, set 'is_ex' to false.
-#     Column Name: {column_name}
-#     Member Info:
-#     Return a dictionary with keys 'is_check', 'is_ex', and 'text'.
-#     """
-
-#     response = openai.Completion.create(
-#         model="text-davinci-003",
-#         prompt=prompt,
-#         max_tokens=100,
-#         n=1,
-#         stop=None,
-#         temperature=0.7,
-#     )
-
-#     response_text = response.choices[0].text.strip()
-#     gpt_response = eval(response_text)
-    
-#     item_info = ItemInfo(
-#         is_check=gpt_response['is_check'],
-#         is_ex=gpt_response['is_ex'],
-#         text=gpt_response['text']
-#     )
-    
-#     return item_info
