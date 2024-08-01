@@ -52,7 +52,6 @@ class Item(BaseModel):
 
 class DocsInfoDTO(BaseModel):
     title: str
-    image: str
     translate: str
     items: List[Item]
     emptyItems: List[Item]
